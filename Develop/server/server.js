@@ -1,3 +1,4 @@
+const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
@@ -8,6 +9,16 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+context: ({ req }) => ({
+  token: req.headers.authorization || ''
+})
+});
+
+server.applyMiddleware({ app });
 
 // if we're in production, serve client/build as static assets
 if (process.env.NODE_ENV === 'production') {
