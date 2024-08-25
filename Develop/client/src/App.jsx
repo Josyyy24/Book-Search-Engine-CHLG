@@ -3,23 +3,18 @@ import {
   ApolloClient, 
   InMemoryCache,
   ApolloProvider,
-  createHttpLink
+  createHttpLink,
 } from '@apollo/client';
+
+import 'https://www.apollographql.com/docs/react/get-started/';
 import { setContext } from '@apollo/client/link/context';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Route } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
-
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { StoreProvider } from './utils/GlobalState';
-import { Container } from 'react-bootstrap';
-
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
-import Login from './pages/Login';
 
 import Signup from './pages/Signup';
-import NoMatch from './pages/NoMatch';
 import Auth from './utils/auth';
 
 const httpLink = createHttpLink({
@@ -44,21 +39,13 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <StoreProvider>
+      <div>
           <Navbar />
           <Outlet />
-          <Container>
-            <Switch>
-              <Route exact path="/" component={SearchBooks} />
-              <Route exact path="/saved" component={SavedBooks} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/signup" component={Signup} />
-              <Route component={NoMatch} />
-            </Switch>
-          </Container>
-        </StoreProvider>
-      </Router>
+          <Route exact path="/" component={SearchBooks} />
+          <Route exact path="/saved" component={SavedBooks} />
+          <Route exact path="/signup" component={Signup} />
+      </div>
     </ApolloProvider>
   );
 }
