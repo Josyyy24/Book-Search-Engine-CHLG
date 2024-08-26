@@ -5,24 +5,19 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-
-import 'https://www.apollographql.com/docs/react/get-started/';
 import { setContext } from '@apollo/client/link/context';
-import { Outlet, Route } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
-import SearchBooks from './pages/SearchBooks';
-import SavedBooks from './pages/SavedBooks';
-
-import Signup from './pages/Signup';
-import Auth from './utils/auth';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = Auth.getToken();
+  
+  const token = localStorage.getItem('id_token');
+  
   return {
     headers: {
       ...headers,
@@ -42,9 +37,6 @@ function App() {
       <div>
           <Navbar />
           <Outlet />
-          <Route exact path="/" component={SearchBooks} />
-          <Route exact path="/saved" component={SavedBooks} />
-          <Route exact path="/signup" component={Signup} />
       </div>
     </ApolloProvider>
   );
