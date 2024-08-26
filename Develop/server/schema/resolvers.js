@@ -1,7 +1,7 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { argsToArgsConfig } = require('graphql/type/definition');
 const { User } = require('../models');
-const { signToken, AuthenticationError } = require('../utils/auth');
+const { signToken } = require('../utils/auth');
 
 const authorize = (context) => {
     const token = context.req.headers.authorization;
