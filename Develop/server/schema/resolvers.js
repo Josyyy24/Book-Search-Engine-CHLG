@@ -1,6 +1,7 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Book } = require('../models');
-const { resolvetoken } = require('../utils/auth');
+const { argsToArgsConfig } = require('graphql/type/definition');
+const { User } = require('../models');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const authorize = (context) => {
     const token = context.req.headers.authorization;
@@ -23,14 +24,13 @@ const resolvers = {
     Query: {    
         me: async (parent, args, context) => {
             if (context.user) {
-                const userData = await User.findOne({ _id: context.user._id })
-                    .select('-__v -password')
-                return userData;
+                return User.findOne({ _id: context.user._id })
             }
             throw new AuthenticationError('Not logged in');
         }
     },
 
+    //Signs in the user
     Mutation: {
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
@@ -49,14 +49,14 @@ const resolvers = {
 
             return { token, user };
         },
-
+        //Adds a new user
         addUser: async (parent, args) => {
             const user = await User.create(args);
             const token = resolvetoken(user);
 
             return { token, user };
         },
-
+        //Saves a book to the user's account
         saveBook: async (parent, { bookData }, context) => {
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
@@ -70,7 +70,7 @@ const resolvers = {
 
             throw new AuthenticationError('You need to be logged in!');
         },
-
+        //Removes a book from the user's account
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
